@@ -1,0 +1,95 @@
+# Flutter/Dart
+.dart_tool/
+.flutter-plugins
+.flutter-plugins-dependencies
+.packages
+.pub-cache/
+.pub/
+build/
+ios/Flutter/Flutter.framework
+ios/Flutter/Flutter.podspec
+ios/Flutter/Generated.xcconfig
+ios/Flutter/ephemeral/
+android/.gradle/
+android/app/build/
+android/local.properties
+android/key.properties
+android/gradle/wrapper/gradle-wrapper.jar
+linux/flutter/ephemeral/
+macos/Flutter/ephemeral/
+windows/flutter/ephemeral/
+web/.dart_tool/
+web/build/
+web/flutter.js
+web/flutter_service_worker.js
+web/main.dart.js
+web/main.dart.js.deps
+web/main.dart.js.map
+
+# Node.js
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+dist/
+coverage/
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+.eco_trash/build/
+
+# TypeScript
+*.tsbuildinfo
+
+# IDEs and editors
+.vscode/
+.idea/
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+*.iml
+
+# macOS
+.DS_Store
+
+# Windows
+Thumbs.db
+ehthumbs.db
+desktop.ini
+
+# Logs
+logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+lerna-debug.log*
+
+# Temporary files
+*.tmp
+*.temp
+
+# Generated files
+*.lock
+*.bak
+*.orig
+
+# Miscellaneous
+*.log
+*.pid
+*.seed
+*.pid.lock
+
+# Firebase
+.firebase/
+firebase-debug.log
+firebase-debug.*.log
+
+# Git specific
+.git/
+*.orig
+*.rej

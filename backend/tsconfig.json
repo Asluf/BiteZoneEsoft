@@ -1,0 +1,29 @@
+{
+  "compilerOptions": {
+    "esModuleInterop": true,
+    "declaration": true,
+    "module": "commonjs",
+    "moduleResolution": "node",
+    "types": [
+      "node"
+    ],
+    "target": "ES2022",
+    "sourceMap": true,
+    "experimentalDecorators": true,
+    "emitDecoratorMetadata": true,
+    "noImplicitAny": true,
+    "skipLibCheck": false,
+    "typeRoots": [
+      "./node_modules/@types",
+      "./types",
+      "./api/types"
+    ],
+    "outDir": "./dist",
+    "strict": false,
+  },
+  "include": [
+    "./api/**/*",
+    "./types",
+    "./api/types"
+  ]
+}
