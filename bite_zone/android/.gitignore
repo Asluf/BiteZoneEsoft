@@ -1,0 +1,63 @@
+# Flutter/Dart Related
+.dart_tool/
+.flutter-plugins
+.flutter-plugins-dependencies
+.packages
+pubspec.lock
+
+# Android Related
+/.gradle
+/captures/
+/local.properties
+**/key.properties
+**/*.keystore
+**/*.jks
+
+# iOS/macOS Related
+ios/Flutter/Flutter.framework
+ios/Flutter/Flutter.podspec
+ios/.symlinks/
+ios/Pods/
+ios/Runner.xcworkspace/
+*.xcuserstate
+*.lock
+.DS_Store
+DerivedData/
+build/
+
+# Web Related
+web/.dart_tool/
+web/.packages
+web/.flutter-plugins
+web/.flutter-plugins-dependencies
+
+# Build Output
+/build/
+*/build/
+!.gitkeep
+
+# IDE Related
+.idea/
+*.iml
+.vscode/
+*.swp
+
+# Generated Files
+GeneratedPluginRegistrant.java
+GeneratedPluginRegistrant.*.swift
+
+# Logs and Temporary Files
+*.log
+*.tmp
+*.cache
+*.gz
+
+# Machine-Specific
+*.pem
+*.crt
+*.cer
+*.p12
+
+# JetBrains IDEs
+.idea/
+*.iml
