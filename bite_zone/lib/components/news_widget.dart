@@ -1,3 +1,5 @@
+import 'package:bite_zone/services/user_service.dart';
+import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/material.dart';
 import 'package:bite_zone/components/news_card.dart';
 import 'package:bite_zone/models/news_model.dart';
@@ -12,11 +14,20 @@ class NewsWidget extends StatefulWidget {
 
 class _NewsWidgetState extends State<NewsWidget> {
   Future<List<NewsArticle>>? _environmentNews;
+  bool _isConnected = true;
 
   @override
   void initState() {
     super.initState();
+    _checkConnectivity();
     _environmentNews = NewsService().fetchNews();
+  }
+
+  Future<void> _checkConnectivity() async {
+    final connectivityResult = await UserService().isConnectedToInternet();
+    setState(() {
+      _isConnected = connectivityResult;
+    });
   }
 
   @override
@@ -24,10 +35,14 @@ class _NewsWidgetState extends State<NewsWidget> {
     return FutureBuilder<List<NewsArticle>>(
       future: _environmentNews,
       builder: (context, snapshot) {
-        if (snapshot.connectionState == ConnectionState.waiting) {
-          return const Center(child: CircularProgressIndicator());
+        if (!_isConnected) {
+          return const Center(child: Text('No Internet Connection'));
+        } else if (snapshot.connectionState == ConnectionState.waiting) {
+          return Center(
+              child: CircularProgressIndicator(
+                  color: Theme.of(context).colorScheme.onSecondary));
         } else if (snapshot.hasError) {
-          return Center(child: Text('Error: No Offline Access'));
+          return Center(child: Text('Error: ${snapshot.error}'));
         } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
           return const Center(child: Text('No results found'));
         } else {

@@ -4,7 +4,7 @@ import 'package:bite_zone/services/bite_zone_db_service.dart';
 import 'package:bite_zone/models/user_model.dart';
 
 class AuthService {
-  final String baseUrl = 'http://192.168.8.216:3020/api';
+  final String baseUrl = 'https://bitezone.onrender.com/api';
 
   Future<void> login(String email, String password) async {
     final Map<String, String> headers = {

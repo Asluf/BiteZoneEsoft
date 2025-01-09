@@ -9,7 +9,7 @@ import 'package:bite_zone/services/bite_zone_db_service.dart';
 import 'package:bite_zone/models/user_model.dart';
 
 class UserService {
-  final String baseUrl = 'http://192.168.8.216:3020/api/auth/user';
+  final String baseUrl = 'https://bitezone.onrender.com/api/auth/user';
   HiveService hiveService = HiveService();
 
   Future<bool> isConnectedToInternet() async {
@@ -139,6 +139,17 @@ class UserService {
   }
 
   Future<List<Place>> getTrendingPlaces() async {
+    try {
+      if (await isConnectedToInternet()) {
+        await fetchAndCacheTrendingPlaces();
+      }
+      return await hiveService.getTrendingPlaces();
+    } catch (error) {
+      return await hiveService.getTrendingPlaces();
+    }
+  }
+
+  Future<void> fetchAndCacheTrendingPlaces() async {
     final user = await BiteZoneDBService.instance.getUser();
     if (user == null || user['token'] == null) {
       throw Exception('No token found');
@@ -158,52 +169,30 @@ class UserService {
       final Map<String, dynamic> responseData = jsonDecode(response.body);
       if (responseData['success'] == true) {
         final List<dynamic> placesJson = responseData['data'];
-        return placesJson.map((data) => Place.fromJson(data)).toList();
+        final places = placesJson.map((data) => Place.fromJson(data)).toList();
+        // store in hive box
+        await hiveService.saveTrendingPlaces(places);
       } else {
-        throw Exception('Failed to fetch places: ${responseData['error']}');
+        throw Exception(
+            'Failed to fetch trending places: ${responseData['error']}');
       }
     } else {
-      throw Exception('Failed to fetch places');
-    }
-  }
-
-  Future<void> createReport({
-    required String description,
-    required String location,
-    required File image,
-  }) async {
-    final user = await BiteZoneDBService.instance.getUser();
-    if (user == null || user['token'] == null) {
-      throw Exception('No token found');
-    }
-
-    final String token = user['token'];
-
-    final Map<String, String> headers = {
-      'Authorization': 'Bearer $token',
-    };
-
-    final request =
-        http.MultipartRequest('POST', Uri.parse('$baseUrl/create-report'))
-          ..headers.addAll(headers)
-          ..fields['description'] = description
-          ..fields['location'] = location
-          ..files.add(await http.MultipartFile.fromPath('image', image.path));
-
-    final response = await request.send();
-
-    if (response.statusCode == 200) {
-      final responseData = await http.Response.fromStream(response);
-      final Map<String, dynamic> responseBody = jsonDecode(responseData.body);
-      if (responseBody['success'] != true) {
-        throw Exception('Failed to create report: ${responseBody['error']}');
-      }
-    } else {
-      throw Exception('Failed to create report');
+      throw Exception('Failed to fetch trending places');
     }
   }
 
   Future<List<Place>> getAllFavoritePlaces() async {
+    try {
+      if (await isConnectedToInternet()) {
+        await fetchAndCacheFavoritePlaces();
+      }
+      return await hiveService.getFavoritePlaces();
+    } catch (error) {
+      return await hiveService.getFavoritePlaces();
+    }
+  }
+
+  Future<void> fetchAndCacheFavoritePlaces() async {
     final user = await BiteZoneDBService.instance.getUser();
     if (user == null || user['token'] == null) {
       throw Exception('No token found');
@@ -223,12 +212,15 @@ class UserService {
       final Map<String, dynamic> responseData = jsonDecode(response.body);
       if (responseData['success'] == true) {
         final List<dynamic> placesJson = responseData['data'];
-        return placesJson.map((data) => Place.fromJson(data)).toList();
+        final places = placesJson.map((data) => Place.fromJson(data)).toList();
+        // store in hive box
+        await hiveService.saveFavoritePlaces(places);
       } else {
-        throw Exception('Failed to fetch places: ${responseData['error']}');
+        throw Exception(
+            'Failed to fetch favorite places: ${responseData['error']}');
       }
     } else {
-      throw Exception('Failed to fetch places');
+      throw Exception('Failed to fetch favorite places');
     }
   }
 

@@ -7,7 +7,7 @@ class NewsService {
   final String baseUrl = 'https://newsapi.org/v2';
 
 
-  Future<List<NewsArticle>> fetchNews({String type = 'food'}) async {
+  Future<List<NewsArticle>> fetchNews({String type = 'food+sri+lanka'}) async {
     http.Response response;
 
     response = await http.get(

@@ -5,14 +5,14 @@ import 'package:bite_zone/services/user_service.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/material.dart';
 
-class UserFavoriteScreen extends StatefulWidget {
-  const UserFavoriteScreen({super.key});
+class UserTrendingScreen extends StatefulWidget {
+  const UserTrendingScreen({super.key});
 
   @override
-  State<UserFavoriteScreen> createState() => _UserFavoriteScreenState();
+  State<UserTrendingScreen> createState() => _UserTrendingScreenState();
 }
 
-class _UserFavoriteScreenState extends State<UserFavoriteScreen> {
+class _UserTrendingScreenState extends State<UserTrendingScreen> {
   late Future<List<Place>> _placesFuture;
   bool _isConnected = true;
 
@@ -20,11 +20,11 @@ class _UserFavoriteScreenState extends State<UserFavoriteScreen> {
   void initState() {
     super.initState();
     _checkConnectivity();
-    _placesFuture = _fetchAllFavoritePlaces();
+    _placesFuture = _fetchTrendingPlaces();
   }
 
-  Future<List<Place>> _fetchAllFavoritePlaces() async {
-    return await UserService().getAllFavoritePlaces();
+  Future<List<Place>> _fetchTrendingPlaces() async {
+    return await UserService().getTrendingPlaces();
   }
 
   void _onPlaceSelected(Place place) {

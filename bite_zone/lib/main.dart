@@ -3,6 +3,7 @@ import 'package:bite_zone/screens/common_screens/get_started_screen.dart';
 import 'package:bite_zone/screens/common_screens/login_screen.dart';
 import 'package:bite_zone/screens/common_screens/user_register_screen.dart';
 import 'package:bite_zone/screens/user_screens/user_router_screen.dart';
+import 'package:bite_zone/themes/themes.dart';
 import 'package:flutter/material.dart';
 import 'package:bite_zone/services/bite_zone_db_service.dart';
 import 'package:hive_flutter/adapters.dart';
@@ -73,46 +74,28 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return FutureBuilder(
-      future: _setInitialTheme(context),
-      builder: (context, snapshot) {
-        if (snapshot.connectionState == ConnectionState.waiting) {
-          return const MaterialApp(
-            home: Scaffold(
-              body: Center(
-                child: CircularProgressIndicator(),
-              ),
-            ),
-          );
-        } else {
-          return Consumer<ThemeProvider>(
-            builder: (context, themeProvider, child) {
-              return MaterialApp(
-                title: 'Bite Zone',
-                debugShowCheckedModeBanner: false,
-                theme: themeProvider.themeData,
-                initialRoute: user == null
-                    ? '/get_started'
-                    : _getHomeRoute(user!['role']),
-                routes: {
-                  '/get_started': (context) => const GetStartedScreen(),
-                  '/login': (context) => LoginScreen(),
-                  '/register_user': (context) => UserRegisterScreen(),
-                  '/user_home': (context) => UserRouterScreen(),
-                },
-              );
+    return ChangeNotifierProvider(
+      create: (_) => ThemeProvider(),
+      child: Consumer<ThemeProvider>(
+        builder: (context, themeProvider, child) {
+          return MaterialApp(
+            title: 'Bite Zone',
+            debugShowCheckedModeBanner: false,
+            theme: themeProvider.themeData,
+            darkTheme: darkAshTheme,
+            themeMode: themeProvider.themeMode,
+            initialRoute:
+                user == null ? '/get_started' : _getHomeRoute(user!['role']),
+            routes: {
+              '/get_started': (context) => const GetStartedScreen(),
+              '/login': (context) => LoginScreen(),
+              '/register_user': (context) => UserRegisterScreen(),
+              '/user_home': (context) => UserRouterScreen(),
             },
           );
-        }
-      },
+        },
+      ),
     );
-  }
-
-  Future<void> _setInitialTheme(BuildContext context) async {
-    final themeProvider = Provider.of<ThemeProvider>(context, listen: false);
-    if (user != null) {
-      themeProvider.setTheme(user!['role']);
-    }
   }
 
   String _getHomeRoute(String role) {

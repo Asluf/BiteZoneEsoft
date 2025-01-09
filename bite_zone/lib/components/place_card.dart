@@ -14,11 +14,11 @@ class PlaceCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Card(
-      color: Colors.grey[50],
       elevation: 4.0,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(10),
-        side: const BorderSide(color: Colors.orange, width: 1),
+        side:
+            BorderSide(color: Theme.of(context).colorScheme.secondary, width: 1),
       ),
       shadowColor: Colors.grey.withOpacity(0.5),
       child: InkWell(

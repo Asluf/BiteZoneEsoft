@@ -19,10 +19,12 @@ class _PlaceDetailState extends State<PlaceDetail> {
   late Future<List<Review>> _reviewsFuture;
   double _rating = 0;
   String _message = '';
+  bool _isConnected = true;
 
   @override
   void initState() {
     super.initState();
+    _checkConnectivity();
     _checkFavoriteStatus();
     _reviewsFuture = _fetchReviews();
   }
@@ -36,6 +38,13 @@ class _PlaceDetailState extends State<PlaceDetail> {
     } catch (e) {
       // Handle error
     }
+  }
+
+  Future<void> _checkConnectivity() async {
+    final connectivityResult = await UserService().isConnectedToInternet();
+    setState(() {
+      _isConnected = connectivityResult;
+    });
   }
 
   Future<void> _toggleFavorite() async {
@@ -98,9 +107,12 @@ class _PlaceDetailState extends State<PlaceDetail> {
                     });
                   },
                 ),
-                const SizedBox(height: 10),
+                const SizedBox(height: 17),
                 TextField(
-                  decoration: const InputDecoration(labelText: 'Message'),
+                  decoration: InputDecoration(
+                      labelText: 'Message',
+                      labelStyle: TextStyle(
+                          color: Theme.of(context).colorScheme.onSecondary)),
                   onChanged: (value) {
                     setState(() {
                       _message = value;
@@ -112,17 +124,20 @@ class _PlaceDetailState extends State<PlaceDetail> {
           ),
           actions: [
             TextButton(
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
-              child: const Text('Cancel'),
-            ),
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+                child: Text('Cancel',
+                    style: TextStyle(
+                        color: Theme.of(context).colorScheme.onSecondary))),
             TextButton(
               onPressed: () {
                 _addReview(_rating, _message);
                 Navigator.of(context).pop();
               },
-              child: const Text('Submit'),
+              child: Text('Submit',
+                  style: TextStyle(
+                      color: Theme.of(context).colorScheme.onSecondary)),
             ),
           ],
         );
@@ -250,7 +265,7 @@ class _PlaceDetailState extends State<PlaceDetail> {
                       final url = Uri.parse(googleMapsUrl);
                       await launchUrlExternal(url);
                     },
-                    icon: const Icon(Icons.map),
+                    icon: const Icon(Icons.map, color: Colors.white),
                     label: const Text('Navigate'),
                   ),
                   const SizedBox(width: 10),
@@ -260,7 +275,7 @@ class _PlaceDetailState extends State<PlaceDetail> {
                       final url = Uri.parse(urlString);
                       await launchUrlExternal(url);
                     },
-                    icon: const Icon(Icons.phone),
+                    icon: const Icon(Icons.phone, color: Colors.white),
                     label: const Text('Call Now'),
                   ),
                 ],
@@ -279,7 +294,11 @@ class _PlaceDetailState extends State<PlaceDetail> {
                   TextButton.icon(
                     onPressed: _showAddReviewDialog,
                     icon: const Icon(Icons.add),
-                    label: const Text('Add Review'),
+                    label: Text(
+                      'Add Review',
+                      style: TextStyle(
+                          color: Theme.of(context).colorScheme.onSecondary),
+                    ),
                   ),
                 ],
               ),
@@ -287,10 +306,15 @@ class _PlaceDetailState extends State<PlaceDetail> {
               FutureBuilder<List<Review>>(
                 future: _reviewsFuture,
                 builder: (context, snapshot) {
-                  if (snapshot.connectionState == ConnectionState.waiting) {
-                    return const Center(child: CircularProgressIndicator());
+                  if (!_isConnected) {
+                    return const Center(child: Text('No Internet Connection'));
+                  } else if (snapshot.connectionState ==
+                      ConnectionState.waiting) {
+                    return Center(
+                        child: CircularProgressIndicator(
+                            color: Theme.of(context).colorScheme.onSecondary));
                   } else if (snapshot.hasError) {
-                    return const Center(child: Text('Error: No Offline Access'));
+                    return Center(child: Text('Error: ${snapshot.error}'));
                   } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
                     return const Center(child: Text('No reviews found'));
                   } else {
@@ -298,9 +322,9 @@ class _PlaceDetailState extends State<PlaceDetail> {
                       children: snapshot.data!.map((review) {
                         return ClipRRect(
                           borderRadius: BorderRadius.circular(15.0),
-                          child: Container(
+                          child: Card(
                             margin: const EdgeInsets.symmetric(vertical: 4.0),
-                            color: Colors.orange[50],
+                            // color: Theme.of(context).colorScheme.primary,
                             child: ListTile(
                               title: Text(review.userName),
                               subtitle: Text(review.message),
